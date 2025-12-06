@@ -21,12 +21,18 @@ const repeatFreq = document.getElementById('repeatFreq');
 const customDaysSelector = document.getElementById('customDaysSelector');
 const recurrenceEndDate = document.getElementById('recurrenceEndDate');
 
+// Settings Elements
+const settingsBtn = document.getElementById('settingsBtn');
+const closeSettingsBtn = document.getElementById('closeSettingsBtn');
+const settingsModal = document.getElementById('settingsModal');
+const exportBtn = document.getElementById('exportBtn');
+const importFile = document.getElementById('importFile');
+
 function init() {
     renderCalendar();
     const todayKey = getDateKey(new Date());
     selectDate(todayKey);
     
-    // Default End Date
     const nextMonth = new Date();
     nextMonth.setMonth(nextMonth.getMonth() + 1);
     recurrenceEndDate.value = getDateKey(nextMonth);
@@ -83,11 +89,8 @@ function renderCalendar() {
             const hasIncomplete = dayTasks.some(t => !t.completed);
             const isPast = cellKey < todayKey;
 
-            if (isPast && hasIncomplete) {
-                div.classList.add('past-incomplete');
-            } else {
-                div.classList.add('has-tasks');
-            }
+            if (isPast && hasIncomplete) div.classList.add('past-incomplete');
+            else div.classList.add('has-tasks');
         }
 
         div.addEventListener('click', () => selectDate(cellKey));
@@ -115,7 +118,6 @@ function renderTasks() {
         const li = document.createElement('li');
         const prio = task.priority || 'medium';
 
-        // CHANGED: "span" is now "input type='text'" with onchange event
         li.innerHTML = `
             <input type="checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTask(${index})">
             
@@ -226,17 +228,66 @@ window.updateTaskPriority = (index, newPriority) => {
     renderTasks();
 };
 
-// NEW: Save text edits
 window.updateTaskText = (index, newText) => {
     tasks[selectedDate][index].text = newText;
     saveData();
-    // We don't need to re-render here, as the input is already updated by the user typing
 };
 
 function saveData() {
     localStorage.setItem('tasks', JSON.stringify(tasks));
 }
 
+// --- NEW DATA MANAGEMENT FUNCTIONS ---
+
+function toggleSettings() {
+    settingsModal.classList.toggle('hidden');
+}
+
+function exportData() {
+    // Convert data to JSON string
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(tasks));
+    const downloadAnchor = document.createElement('a');
+    
+    // Create filename like: taskcal_backup_2023-10-25.json
+    const dateStr = new Date().toISOString().split('T')[0];
+    downloadAnchor.setAttribute("href", dataStr);
+    downloadAnchor.setAttribute("download", `taskcal_backup_${dateStr}.json`);
+    
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+}
+
+function importData(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const importedTasks = JSON.parse(e.target.result);
+            // Basic validation: check if it's an object
+            if (typeof importedTasks === 'object' && importedTasks !== null) {
+                tasks = importedTasks;
+                saveData();
+                renderCalendar();
+                renderTasks();
+                toggleSettings(); // Close modal
+                alert("Data restored successfully!");
+            } else {
+                alert("Invalid file format.");
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Error reading file. Make sure it's a valid JSON backup.");
+        }
+    };
+    reader.readAsText(file);
+    // Reset input so same file can be selected again if needed
+    event.target.value = '';
+}
+
+// Event Listeners
 document.getElementById('prevMonth').addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(); });
 document.getElementById('nextMonth').addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(); });
 document.getElementById('addTaskBtn').addEventListener('click', addTask);
@@ -252,5 +303,15 @@ isRecurringCb.addEventListener('change', (e) => {
 repeatFreq.addEventListener('change', (e) => {
     customDaysSelector.classList.toggle('hidden', e.target.value !== 'custom');
 });
+
+// Settings Listeners
+settingsBtn.addEventListener('click', toggleSettings);
+closeSettingsBtn.addEventListener('click', toggleSettings);
+// Close modal if clicking outside content
+settingsModal.addEventListener('click', (e) => {
+    if (e.target === settingsModal) toggleSettings();
+});
+exportBtn.addEventListener('click', exportData);
+importFile.addEventListener('change', importData);
 
 init();
