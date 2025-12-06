@@ -29,8 +29,48 @@
             <h3 id="selectedDateLabel">Select a date</h3>
             
             <div class="input-group">
+                <select id="priorityInput" class="priority-select medium">
+                    <option value="low">Low</option>
+                    <option value="medium" selected>Med</option>
+                    <option value="high">High</option>
+                </select>
+
                 <input type="text" id="taskInput" placeholder="Add a new task...">
                 <button id="addTaskBtn">+</button>
+            </div>
+
+            <div class="recurrence-wrapper">
+                <label class="recurrence-toggle">
+                    <input type="checkbox" id="isRecurring"> 
+                    <span>Repeat this task?</span>
+                </label>
+
+                <div id="recurrenceOptions" class="recurrence-options hidden">
+                    <div class="row">
+                        <label>Frequency:</label>
+                        <select id="repeatFreq">
+                            <option value="daily">Daily</option>
+                            <option value="weekly">Weekly</option>
+                            <option value="monthly">Monthly</option>
+                            <option value="custom">Custom Days</option>
+                        </select>
+                    </div>
+
+                    <div id="customDaysSelector" class="custom-days hidden">
+                        <div class="day-checkbox"><input type="checkbox" value="1" id="d-mon"><label for="d-mon">M</label></div>
+                        <div class="day-checkbox"><input type="checkbox" value="2" id="d-tue"><label for="d-tue">T</label></div>
+                        <div class="day-checkbox"><input type="checkbox" value="3" id="d-wed"><label for="d-wed">W</label></div>
+                        <div class="day-checkbox"><input type="checkbox" value="4" id="d-thu"><label for="d-thu">T</label></div>
+                        <div class="day-checkbox"><input type="checkbox" value="5" id="d-fri"><label for="d-fri">F</label></div>
+                        <div class="day-checkbox"><input type="checkbox" value="6" id="d-sat"><label for="d-sat">S</label></div>
+                        <div class="day-checkbox"><input type="checkbox" value="0" id="d-sun"><label for="d-sun">S</label></div>
+                    </div>
+
+                    <div class="row">
+                        <label>Until:</label>
+                        <input type="date" id="recurrenceEndDate">
+                    </div>
+                </div>
             </div>
 
             <ul id="activeTaskList" class="task-list"></ul>
