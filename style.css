@@ -4,30 +4,18 @@ body { margin: 0; padding: 0; background-color: #f4f4f9; color: #333; }
 
 .container { max-width: 500px; margin: 0 auto; padding: 20px; background: white; min-height: 100vh; position: relative; }
 
-/* Header & Nav */
+/* Header */
 header { margin-bottom: 20px; }
 .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
 .header-top h2 { margin: 0; color: #4a90e2; }
 
-/* UPDATED SETTINGS BUTTON STYLES */
 #settingsBtn { 
-    background: none; 
-    border: none; 
-    cursor: pointer; 
-    padding: 8px; 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    transition: background-color 0.2s;
+    background: none; border: none; cursor: pointer; padding: 8px; 
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 50%; transition: background-color 0.2s;
 }
-#settingsBtn:hover {
-    background-color: #f0f8ff; /* Light blue hover matching theme */
-}
-#settingsBtn svg {
-    display: block; /* Removes extra space below SVG */
-}
-
+#settingsBtn:hover { background-color: #f0f8ff; }
+#settingsBtn svg { display: block; }
 
 .month-nav { display: flex; justify-content: space-between; align-items: center; }
 .month-nav h3 { margin: 0; font-size: 1.1rem; }
@@ -41,17 +29,37 @@ button { background: none; border: none; cursor: pointer; font-size: 1.2rem; }
     aspect-ratio: 1 / 1; 
     display: flex; align-items: center; justify-content: center;
     cursor: pointer; border-radius: 50%; transition: 0.2s; 
-    font-size: 0.9rem; position: relative; border: 2px solid transparent; 
+    font-size: 0.9rem; position: relative; 
+    border: 2px solid transparent; /* default transparent border */
 }
 .day:hover { background-color: #eee; }
-.day.active { background-color: #4a90e2; color: white; border-color: #4a90e2; box-shadow: 0 4px 10px rgba(74, 144, 226, 0.4); }
 
+/* --- INDICATORS --- */
+
+/* 1. TODAY INDICATOR (New) */
+.day.today {
+    border: 2px solid #4a90e2; /* Solid Blue Ring */
+    color: #4a90e2;
+    font-weight: 900; /* Extra Bold */
+    background-color: #f0f8ff; /* Very light blue tint */
+}
+
+/* 2. SELECTED STATE (Overrides Today) */
+.day.active { 
+    background-color: #4a90e2; 
+    color: white; 
+    border-color: #4a90e2; 
+    box-shadow: 0 4px 10px rgba(74, 144, 226, 0.4); 
+}
+
+/* 3. FUTURE TASKS (Blue Dot) */
 .day.has-tasks::after {
     content: ''; position: absolute; bottom: 5px; width: 4px; height: 4px;
     background-color: #4a90e2; border-radius: 50%;
 }
 .day.active.has-tasks::after { background-color: white; }
 
+/* 4. PAST INCOMPLETE (Red Ring) */
 .day.past-incomplete::after { display: none; }
 .day.past-incomplete {
     border: 2px solid #ff4757; color: #ff4757; font-weight: bold;
@@ -60,6 +68,7 @@ button { background: none; border: none; cursor: pointer; font-size: 1.2rem; }
 .day.active.past-incomplete {
     background-color: #4a90e2; color: white; border-color: #ffcccc; 
 }
+
 .day.empty { cursor: default; }
 
 /* Input Section */
@@ -122,25 +131,22 @@ li input[type="checkbox"] { width: 18px; height: 18px; accent-color: #4a90e2; cu
 .completed-list li .task-text { text-decoration: line-through; color: #aaa; }
 .completed-list .list-priority { opacity: 0.5; }
 
-/* SETTINGS MODAL STYLES */
+/* Modal Styles */
 .modal {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(0,0,0,0.5); z-index: 1000;
     display: flex; justify-content: center; align-items: center;
 }
 .modal.hidden { display: none; }
-
 .modal-content {
     background: white; width: 90%; max-width: 350px;
     padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
     animation: slideUp 0.3s;
 }
 @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
 .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
 .modal-header h3 { margin: 0; color: #333; }
 #closeSettingsBtn { font-size: 1.5rem; color: #888; background: none; border: none; cursor: pointer;}
-
 .action-btn {
     display: block; width: 100%; padding: 12px; margin-bottom: 10px;
     text-align: center; border-radius: 8px; border: none; font-size: 1rem; cursor: pointer;
@@ -149,5 +155,4 @@ li input[type="checkbox"] { width: 18px; height: 18px; accent-color: #4a90e2; cu
 .action-btn.download { background: #4a90e2; color: white; }
 .action-btn.upload { background: #fff; border: 2px solid #4a90e2; color: #4a90e2; }
 .import-wrapper input[type="file"] { display: none; }
-
 .warning-text { font-size: 0.8rem; color: #999; text-align: center; margin-top: 10px; }

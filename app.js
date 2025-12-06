@@ -42,6 +42,7 @@ function init() {
     }
 }
 
+// Local Time Helper
 function getDateKey(date) {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -58,6 +59,8 @@ function renderCalendar() {
 
     const firstDay = new Date(year, month, 1).getDay();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
+    
+    // CURRENT DAY LOGIC
     const todayKey = getDateKey(new Date());
 
     ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].forEach(d => {
@@ -82,8 +85,10 @@ function renderCalendar() {
         const cellKey = getDateKey(cellDate);
         div.dataset.date = cellKey;
 
+        // Apply visual classes
         if (cellKey === selectedDate) div.classList.add('active');
-        
+        if (cellKey === todayKey) div.classList.add('today'); // Add "Today" class
+
         const dayTasks = tasks[cellKey] || [];
         if (dayTasks.length > 0) {
             const hasIncomplete = dayTasks.some(t => !t.completed);
@@ -237,22 +242,17 @@ function saveData() {
     localStorage.setItem('tasks', JSON.stringify(tasks));
 }
 
-// --- NEW DATA MANAGEMENT FUNCTIONS ---
-
+// Settings Logic
 function toggleSettings() {
     settingsModal.classList.toggle('hidden');
 }
 
 function exportData() {
-    // Convert data to JSON string
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(tasks));
     const downloadAnchor = document.createElement('a');
-    
-    // Create filename like: taskcal_backup_2023-10-25.json
     const dateStr = new Date().toISOString().split('T')[0];
     downloadAnchor.setAttribute("href", dataStr);
     downloadAnchor.setAttribute("download", `taskcal_backup_${dateStr}.json`);
-    
     document.body.appendChild(downloadAnchor);
     downloadAnchor.click();
     downloadAnchor.remove();
@@ -261,33 +261,29 @@ function exportData() {
 function importData(event) {
     const file = event.target.files[0];
     if (!file) return;
-    
     const reader = new FileReader();
     reader.onload = function(e) {
         try {
             const importedTasks = JSON.parse(e.target.result);
-            // Basic validation: check if it's an object
             if (typeof importedTasks === 'object' && importedTasks !== null) {
                 tasks = importedTasks;
                 saveData();
                 renderCalendar();
                 renderTasks();
-                toggleSettings(); // Close modal
+                toggleSettings();
                 alert("Data restored successfully!");
             } else {
                 alert("Invalid file format.");
             }
         } catch (err) {
-            console.error(err);
-            alert("Error reading file. Make sure it's a valid JSON backup.");
+            alert("Error reading file.");
         }
     };
     reader.readAsText(file);
-    // Reset input so same file can be selected again if needed
     event.target.value = '';
 }
 
-// Event Listeners
+// Listeners
 document.getElementById('prevMonth').addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(); });
 document.getElementById('nextMonth').addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(); });
 document.getElementById('addTaskBtn').addEventListener('click', addTask);
@@ -304,13 +300,9 @@ repeatFreq.addEventListener('change', (e) => {
     customDaysSelector.classList.toggle('hidden', e.target.value !== 'custom');
 });
 
-// Settings Listeners
 settingsBtn.addEventListener('click', toggleSettings);
 closeSettingsBtn.addEventListener('click', toggleSettings);
-// Close modal if clicking outside content
-settingsModal.addEventListener('click', (e) => {
-    if (e.target === settingsModal) toggleSettings();
-});
+settingsModal.addEventListener('click', (e) => { if (e.target === settingsModal) toggleSettings(); });
 exportBtn.addEventListener('click', exportData);
 importFile.addEventListener('change', importData);
 
