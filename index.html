@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskCal PWA</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4a90e2">
+    <link rel="apple-touch-icon" href="icon-192.png"> 
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <div class="month-nav">
+                <button id="prevMonth">&lt;</button>
+                <h2 id="monthYear"></h2>
+                <button id="nextMonth">&gt;</button>
+            </div>
+        </header>
+
+        <div class="calendar" id="calendar">
+            </div>
+
+        <hr>
+
+        <div class="task-section">
+            <h3 id="selectedDateLabel">Select a date</h3>
+            
+            <div class="input-group">
+                <input type="text" id="taskInput" placeholder="Add a new task...">
+                <button id="addTaskBtn">+</button>
+            </div>
+
+            <ul id="activeTaskList" class="task-list"></ul>
+
+            <div class="completed-section" id="completedSection" style="display: none;">
+                <h4 id="completedHeader">Completed (0)</h4>
+                <ul id="completedTaskList" class="task-list completed-list"></ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

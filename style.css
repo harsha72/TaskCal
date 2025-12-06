@@ -1,0 +1,65 @@
+* { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+
+body { margin: 0; padding: 0; background-color: #f4f4f9; color: #333; }
+
+.container { max-width: 500px; margin: 0 auto; padding: 20px; background: white; min-height: 100vh; }
+
+/* Calendar Styles */
+header { text-align: center; margin-bottom: 20px; }
+.month-nav { display: flex; justify-content: space-between; align-items: center; }
+button { background: none; border: none; cursor: pointer; font-size: 1.2rem; }
+
+.calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; text-align: center; }
+.day-name { font-weight: bold; font-size: 0.8rem; color: #666; margin-bottom: 5px; }
+
+/* MODIFIED: Circular Dates */
+.day { 
+    aspect-ratio: 1 / 1; /* Ensures height equals width */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer; 
+    border-radius: 50%; /* Makes it a circle */
+    transition: 0.2s; 
+    font-size: 0.9rem;
+}
+
+.day:hover { background-color: #eee; }
+.day.active { background-color: #4a90e2; color: white; box-shadow: 0 4px 10px rgba(74, 144, 226, 0.4); }
+
+/* Underline indicator for tasks logic changed to a small dot for circles */
+.day.has-tasks { position: relative; }
+.day.has-tasks::after {
+    content: '';
+    position: absolute;
+    bottom: 5px;
+    width: 4px;
+    height: 4px;
+    background-color: currentColor; /* Matches text color (white if active, black if not) */
+    border-radius: 50%;
+}
+
+.day.empty { cursor: default; }
+
+/* Task Styles */
+.task-section { margin-top: 20px; }
+.input-group { display: flex; gap: 10px; margin-bottom: 15px; }
+#taskInput { flex-grow: 1; padding: 10px; border: 1px solid #ddd; border-radius: 20px; outline: none; }
+#addTaskBtn { background: #4a90e2; color: white; width: 40px; height: 40px; border-radius: 50%; font-size: 1.5rem; display: flex; justify-content: center; align-items: center; }
+
+ul { list-style: none; padding: 0; }
+li { display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #eee; animation: fadeIn 0.3s; }
+
+/* Checkbox Styling */
+li input[type="checkbox"] { margin-right: 15px; width: 18px; height: 18px; accent-color: #4a90e2; cursor: pointer; }
+.delete-btn { margin-left: auto; color: #ff6b6b; font-size: 1.2rem; padding: 0 10px; }
+
+/* Grouped Completed Styles */
+.completed-section { margin-top: 30px; }
+#completedHeader { color: #888; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+.completed-list li span { text-decoration: line-through; color: #aaa; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
